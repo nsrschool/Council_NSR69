@@ -289,9 +289,31 @@
     <div class="card p-4"><p class="text-xs text-slate-500">ห้องคะแนนสูงสุด</p><p class="text-base font-bold text-emerald-700" id="cl-top">—</p></div>
     <div class="card p-4"><p class="text-xs text-slate-500">ห้องต้องปรับปรุง</p><p class="text-base font-bold text-red-700" id="cl-bottom">—</p></div>
   </div>
+
+  <!-- Period Filter + Ranking -->
+  <div class="card p-5 mb-6">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+      <h3 class="font-semibold">🏆 สรุปอันดับห้อง · ตามช่วงเวลา</h3>
+      <div class="flex flex-wrap gap-1" id="cl-period-buttons">
+        <button class="period-btn px-3 py-1.5 rounded-lg text-sm font-medium bg-blue-600 text-white" data-system="cleanliness" data-period="day">📋 วันนี้</button>
+        <button class="period-btn px-3 py-1.5 rounded-lg text-sm font-medium bg-slate-200 hover:bg-slate-300" data-system="cleanliness" data-period="week">📅 สัปดาห์</button>
+        <button class="period-btn px-3 py-1.5 rounded-lg text-sm font-medium bg-slate-200 hover:bg-slate-300" data-system="cleanliness" data-period="month">📆 เดือน</button>
+        <button class="period-btn px-3 py-1.5 rounded-lg text-sm font-medium bg-slate-200 hover:bg-slate-300" data-system="cleanliness" data-period="semester">🎓 ภาคเรียน</button>
+        <button class="period-btn px-3 py-1.5 rounded-lg text-sm font-medium bg-slate-200 hover:bg-slate-300" data-system="cleanliness" data-period="year">📚 ปีการศึกษา</button>
+      </div>
+    </div>
+    <p id="cl-period-range" class="text-xs text-slate-500 mb-3">—</p>
+    <div class="overflow-x-auto">
+      <table class="table-modern w-full">
+        <thead><tr><th>อันดับ</th><th>ห้อง</th><th>คะแนนเฉลี่ย</th><th>คะแนนรวม</th><th>จำนวนครั้ง</th><th>% ของคะแนนเต็ม</th></tr></thead>
+        <tbody id="cl-ranking-rows"><tr><td colspan="6"><div class="empty-state"><div class="emoji">📊</div><p>ยังไม่มีการประเมินในช่วงเวลานี้</p></div></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
   <div class="grid md:grid-cols-2 gap-4 mb-6">
-    <div class="card p-5"><h3 class="font-semibold mb-3">📊 คะแนนเฉลี่ยรายห้อง</h3><div class="chart-box-lg"><canvas id="chart-cl-class"></canvas></div></div>
-    <div class="card p-5"><h3 class="font-semibold mb-3">📈 แนวโน้มคะแนนรายวัน</h3><div class="chart-box"><canvas id="chart-cl-trend"></canvas></div></div>
+    <div class="card p-5"><h3 class="font-semibold mb-3">📊 คะแนนเฉลี่ยรายห้อง (ตามช่วงที่เลือก)</h3><div class="chart-box-lg"><canvas id="chart-cl-class"></canvas></div></div>
+    <div class="card p-5"><h3 class="font-semibold mb-3">📈 แนวโน้มคะแนนรายวัน (ทั้งหมด)</h3><div class="chart-box"><canvas id="chart-cl-trend"></canvas></div></div>
   </div>
   <div class="card p-5"><h3 class="font-semibold mb-3">📋 ประวัติการประเมิน</h3>
     <div class="overflow-x-auto"><table class="table-modern w-full">
@@ -311,9 +333,31 @@
     <div class="card p-4"><p class="text-xs text-slate-500">ห้องคะแนนสูงสุด</p><p class="text-base font-bold text-emerald-700" id="ln-top">—</p></div>
     <div class="card p-4"><p class="text-xs text-slate-500">ห้องต้องปรับปรุง</p><p class="text-base font-bold text-red-700" id="ln-bottom">—</p></div>
   </div>
+
+  <!-- Period Filter + Ranking -->
+  <div class="card p-5 mb-6">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+      <h3 class="font-semibold">🏆 สรุปอันดับห้อง · ตามช่วงเวลา</h3>
+      <div class="flex flex-wrap gap-1" id="ln-period-buttons">
+        <button class="period-btn px-3 py-1.5 rounded-lg text-sm font-medium bg-blue-600 text-white" data-system="lineup" data-period="day">📋 วันนี้</button>
+        <button class="period-btn px-3 py-1.5 rounded-lg text-sm font-medium bg-slate-200 hover:bg-slate-300" data-system="lineup" data-period="week">📅 สัปดาห์</button>
+        <button class="period-btn px-3 py-1.5 rounded-lg text-sm font-medium bg-slate-200 hover:bg-slate-300" data-system="lineup" data-period="month">📆 เดือน</button>
+        <button class="period-btn px-3 py-1.5 rounded-lg text-sm font-medium bg-slate-200 hover:bg-slate-300" data-system="lineup" data-period="semester">🎓 ภาคเรียน</button>
+        <button class="period-btn px-3 py-1.5 rounded-lg text-sm font-medium bg-slate-200 hover:bg-slate-300" data-system="lineup" data-period="year">📚 ปีการศึกษา</button>
+      </div>
+    </div>
+    <p id="ln-period-range" class="text-xs text-slate-500 mb-3">—</p>
+    <div class="overflow-x-auto">
+      <table class="table-modern w-full">
+        <thead><tr><th>อันดับ</th><th>ห้อง</th><th>คะแนนเฉลี่ย</th><th>คะแนนรวม</th><th>จำนวนครั้ง</th><th>% ของคะแนนเต็ม</th></tr></thead>
+        <tbody id="ln-ranking-rows"><tr><td colspan="6"><div class="empty-state"><div class="emoji">📊</div><p>ยังไม่มีการประเมินในช่วงเวลานี้</p></div></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
   <div class="grid md:grid-cols-2 gap-4 mb-6">
-    <div class="card p-5"><h3 class="font-semibold mb-3">📊 คะแนนเฉลี่ยรายห้อง</h3><div class="chart-box-lg"><canvas id="chart-ln-class"></canvas></div></div>
-    <div class="card p-5"><h3 class="font-semibold mb-3">📈 แนวโน้มคะแนนรายวัน</h3><div class="chart-box"><canvas id="chart-ln-trend"></canvas></div></div>
+    <div class="card p-5"><h3 class="font-semibold mb-3">📊 คะแนนเฉลี่ยรายห้อง (ตามช่วงที่เลือก)</h3><div class="chart-box-lg"><canvas id="chart-ln-class"></canvas></div></div>
+    <div class="card p-5"><h3 class="font-semibold mb-3">📈 แนวโน้มคะแนนรายวัน (ทั้งหมด)</h3><div class="chart-box"><canvas id="chart-ln-trend"></canvas></div></div>
   </div>
   <div class="card p-5"><h3 class="font-semibold mb-3">📋 ประวัติการประเมิน</h3>
     <div class="overflow-x-auto"><table class="table-modern w-full">
@@ -380,11 +424,48 @@ async function gsCall(payload) {
     return await res.json();
   } catch (err) { return { ok:false, message: err.message }; }
 }
-gsCall({ action: 'ping' }).then(r => {
+gsCall({ action: 'ping' }).then(async r => {
   const el = document.getElementById('sync-status');
-  if (r && r.ok) { el.textContent = '🟢 เชื่อมต่อแล้ว'; el.className = 'text-xs bg-green-500/30 px-2 py-1 rounded'; }
-  else { el.textContent = '⚠️ ใช้งานออฟไลน์'; el.className = 'text-xs bg-yellow-500/30 px-2 py-1 rounded'; }
+  if (r && r.ok) {
+    el.textContent = '🔄 ซิงค์ข้อมูล...'; el.className = 'text-xs bg-yellow-500/30 px-2 py-1 rounded';
+    await loadFromGSheets();
+    el.textContent = '🟢 เชื่อมต่อแล้ว'; el.className = 'text-xs bg-green-500/30 px-2 py-1 rounded';
+    // re-render current active tab with fresh data
+    const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
+    if (activeTab && window['render_'+activeTab]) window['render_'+activeTab]();
+  } else {
+    el.textContent = '⚠️ ใช้งานออฟไลน์'; el.className = 'text-xs bg-yellow-500/30 px-2 py-1 rounded';
+  }
 });
+
+// Load all data from Google Sheets — try batch first, fall back to parallel list
+async function loadFromGSheets() {
+  // Strategy 1: batch endpoint (1 request, fastest)
+  try {
+    const batch = await gsCall({ action: 'listAll' });
+    if (batch && batch.ok && batch.data && typeof batch.data === 'object') {
+      Object.keys(batch.data).forEach(sys => {
+        if (Array.isArray(batch.data[sys])) DATA[sys] = batch.data[sys];
+      });
+      saveData();
+      console.log('[NSR] Loaded via batch endpoint');
+      return;
+    }
+  } catch(e) { /* fall through */ }
+
+  // Strategy 2: parallel requests (10x faster than sequential)
+  const systems = ['evoting','poll','council','voicebox','eyes','demerit','lostfound','attendance','cleanliness','lineup'];
+  const results = await Promise.allSettled(systems.map(sys =>
+    gsCall({ action: 'list', system: sys }).then(r => ({ sys, data: r?.data }))
+  ));
+  results.forEach(res => {
+    if (res.status === 'fulfilled' && res.value && Array.isArray(res.value.data)) {
+      DATA[res.value.sys] = res.value.data;
+    }
+  });
+  saveData();
+  console.log('[NSR] Loaded via parallel requests');
+}
 
 async function syncAdd(system, record) {
   if (!record.id) record.id = 'REC' + Date.now() + Math.floor(Math.random()*1000);
@@ -450,6 +531,129 @@ function avgPerClass(records) {
   Object.keys(sum).forEach(k => avg[k] = +(sum[k]/cnt[k]).toFixed(2));
   return avg;
 }
+
+// =================== PERIOD HELPERS ===================
+function getAcademicYearRange(d = new Date()) {
+  // Thai academic year: starts mid-May, ends end of March next year
+  // If month >= 5 (May), year = current year; else year = previous year
+  const month = d.getMonth() + 1;  // 1-12
+  const year = d.getFullYear();
+  const startYear = month >= 5 ? year : year - 1;
+  const start = new Date(startYear, 4, 16);  // May 16
+  const end = new Date(startYear + 1, 2, 31, 23, 59, 59);  // March 31 next year
+  return { start, end, label: `ปีการศึกษา ${startYear + 543}` };
+}
+function getSemesterRange(d = new Date()) {
+  // Semester 1: May 16 - Oct 31
+  // Semester 2: Nov 1 - Mar 31 (next year)
+  const ay = getAcademicYearRange(d);
+  const sem1End = new Date(ay.start.getFullYear(), 9, 31, 23, 59, 59);  // Oct 31
+  if (d <= sem1End) {
+    return { start: ay.start, end: sem1End, label: `ภาคเรียนที่ 1 / ${ay.label.replace('ปีการศึกษา ','')}` };
+  }
+  const sem2Start = new Date(ay.start.getFullYear(), 10, 1);  // Nov 1
+  return { start: sem2Start, end: ay.end, label: `ภาคเรียนที่ 2 / ${ay.label.replace('ปีการศึกษา ','')}` };
+}
+function getPeriodRange(period, refDate = new Date()) {
+  const today = new Date(refDate); today.setHours(0,0,0,0);
+  if (period === 'day') {
+    const end = new Date(today); end.setHours(23,59,59);
+    return { start: today, end, label: `วันนี้ (${thaiDate(toISODate(today))})` };
+  }
+  if (period === 'week') {
+    // Past 7 days including today
+    const start = new Date(today); start.setDate(start.getDate() - 6);
+    const end = new Date(today); end.setHours(23,59,59);
+    return { start, end, label: `7 วันที่ผ่านมา (${thaiDate(toISODate(start))} – ${thaiDate(toISODate(end))})` };
+  }
+  if (period === 'month') {
+    const start = new Date(today.getFullYear(), today.getMonth(), 1);
+    const end = new Date(today.getFullYear(), today.getMonth()+1, 0, 23, 59, 59);
+    const monthNames = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+    return { start, end, label: `${monthNames[today.getMonth()]} ${today.getFullYear()+543}` };
+  }
+  if (period === 'semester') return getSemesterRange(refDate);
+  if (period === 'year') return getAcademicYearRange(refDate);
+  return { start: new Date(0), end: new Date(9999,11,31), label: 'ทั้งหมด' };
+}
+function toISODate(d) { return d.toISOString().slice(0,10); }
+
+function filterByPeriod(records, period) {
+  const { start, end } = getPeriodRange(period);
+  const startStr = toISODate(start);
+  const endStr = toISODate(end);
+  return records.filter(r => {
+    const d = (r.date || '').slice(0,10);
+    return d >= startStr && d <= endStr;
+  });
+}
+
+// Get ranking by class for evaluation records
+function getClassRankings(records) {
+  const sum = {}, cnt = {};
+  records.forEach(r => {
+    if (r.classScores) Object.entries(r.classScores).forEach(([cls, score]) => {
+      sum[cls] = (sum[cls]||0) + Number(score);
+      cnt[cls] = (cnt[cls]||0) + 1;
+    });
+  });
+  const rankings = Object.keys(sum).map(cls => ({
+    class: cls,
+    total: sum[cls],
+    count: cnt[cls],
+    avg: +(sum[cls]/cnt[cls]).toFixed(2),
+    pctOfFull: +((sum[cls] / (cnt[cls]*10)) * 100).toFixed(1)
+  }));
+  rankings.sort((a, b) => b.avg - a.avg || b.total - a.total);
+  return rankings;
+}
+
+// Render ranking table for cleanliness or lineup
+function renderRanking(system, period) {
+  const records = filterByPeriod(DATA[system], period);
+  const range = getPeriodRange(period);
+  const prefix = system === 'cleanliness' ? 'cl' : 'ln';
+  document.getElementById(`${prefix}-period-range`).textContent = `📅 ช่วงที่เลือก: ${range.label}  ·  จำนวนการประเมิน ${records.length} ครั้ง`;
+  const rankings = getClassRankings(records);
+  const tbody = document.getElementById(`${prefix}-ranking-rows`);
+  if (!rankings.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="emoji">📊</div><p>ยังไม่มีการประเมินในช่วงเวลานี้</p></div></td></tr>`;
+  } else {
+    tbody.innerHTML = rankings.map((r, i) => {
+      const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+      const cls = r.avg>=8?'badge-success':r.avg>=5?'badge-warn':'badge-danger';
+      return `<tr><td class="text-center font-bold">${medal}</td><td class="font-medium">${r.class}</td><td><span class="badge ${cls}">${r.avg}/10</span></td><td>${r.total}</td><td>${r.count}</td><td>${r.pctOfFull}%</td></tr>`;
+    }).join('');
+  }
+  // Update chart-cl-class / chart-ln-class with filtered data
+  const ap = avgPerClass(records);
+  const color = system === 'cleanliness' ? '#10b981' : '#3b82f6';
+  drawChart(`chart-${prefix}-class`, 'bar', {
+    labels: NSR_CONFIG.classes,
+    datasets: [{ label: `คะแนนเฉลี่ย (${range.label})`, data: NSR_CONFIG.classes.map(c => ap[c]||0), backgroundColor: color }]
+  }, { scales: { y: { beginAtZero: true, max: 10 } } });
+  // Update KPI cards "ห้องคะแนนสูงสุด/ปรับปรุง" based on filtered data
+  if (rankings.length) {
+    document.getElementById(`${prefix}-top`).textContent = `${rankings[0].class} (${rankings[0].avg})`;
+    document.getElementById(`${prefix}-bottom`).textContent = `${rankings[rankings.length-1].class} (${rankings[rankings.length-1].avg})`;
+  }
+}
+
+// Period button click handler (delegated)
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.period-btn');
+  if (!btn) return;
+  const system = btn.dataset.system;
+  const period = btn.dataset.period;
+  // Update active state for buttons in this system
+  document.querySelectorAll(`.period-btn[data-system="${system}"]`).forEach(b => {
+    b.classList.remove('bg-blue-600','text-white');
+    b.classList.add('bg-slate-200','hover:bg-slate-300');
+  });
+  btn.classList.add('bg-blue-600','text-white');
+  btn.classList.remove('bg-slate-200','hover:bg-slate-300');
+  renderRanking(system, period);
+});
 
 // =================== DASHBOARD ===================
 function render_dashboard() {
@@ -927,34 +1131,37 @@ function render_cleanliness() {
     const all = recs.flatMap(r=>Object.values(r.classScores||{}));
     const avg = all.reduce((a,b)=>a+b,0)/Math.max(1,all.length);
     document.getElementById('cl-avg').textContent = avg.toFixed(2);
-    const ap = avgPerClass(recs);
-    const sorted = Object.entries(ap).sort((a,b)=>b[1]-a[1]);
-    if (sorted.length) {
-      document.getElementById('cl-top').textContent = `${sorted[0][0]} (${sorted[0][1]})`;
-      document.getElementById('cl-bottom').textContent = `${sorted[sorted.length-1][0]} (${sorted[sorted.length-1][1]})`;
-    }
-    drawChart('chart-cl-class','bar',{
-      labels: NSR_CONFIG.classes,
-      datasets:[{label:'คะแนนเฉลี่ย', data:NSR_CONFIG.classes.map(c=>ap[c]||0), backgroundColor:'#10b981'}]
-    }, { scales:{y:{beginAtZero:true,max:10}} });
-    const trend = recs.map(r=>{ const sc=Object.values(r.classScores||{}); return {date:r.date, avg: sc.length?sc.reduce((a,b)=>a+b,0)/sc.length:0}; });
+    // chart-cl-class จะถูก draw โดย renderRanking() ด้านล่าง
+    const trend = recs.slice().sort((a,b)=>(a.date||'').localeCompare(b.date||'')).map(r=>{
+      const sc=Object.values(r.classScores||{});
+      return {date:r.date, avg: sc.length?sc.reduce((a,b)=>a+b,0)/sc.length:0};
+    });
     drawChart('chart-cl-trend','line',{
       labels: trend.map(t=>thaiDate(t.date)),
       datasets:[{label:'คะแนนเฉลี่ย', data:trend.map(t=>+t.avg.toFixed(2)), borderColor:'#10b981', backgroundColor:'rgba(16,185,129,0.1)', tension:0.3, fill:true}]
     }, { scales:{y:{beginAtZero:true,max:10}} });
   } else {
+    document.getElementById('cl-avg').textContent = '—';
+    document.getElementById('cl-top').textContent = '—';
+    document.getElementById('cl-bottom').textContent = '—';
     drawChart('chart-cl-class','bar',{labels:NSR_CONFIG.classes,datasets:[{label:'คะแนนเฉลี่ย',data:NSR_CONFIG.classes.map(()=>0),backgroundColor:'#cbd5e1'}]},{scales:{y:{beginAtZero:true,max:10}}});
     drawChart('chart-cl-trend','line',{labels:['ยังไม่มีข้อมูล'],datasets:[{label:'คะแนนเฉลี่ย',data:[0],borderColor:'#cbd5e1'}]});
   }
+  // history table
   const rows = document.getElementById('cl-rows');
-  if (!recs.length) return;
-  rows.innerHTML = recs.slice().reverse().map(r=>{
-    const sc = Object.values(r.classScores||{});
-    const avg = sc.length?(sc.reduce((a,b)=>a+b,0)/sc.length).toFixed(2):'-';
-    const sorted = Object.entries(r.classScores||{}).sort((a,b)=>b[1]-a[1]);
-    const top = sorted[0]?`${sorted[0][0]} (${sorted[0][1]})`:'-';
-    return `<tr><td>${thaiDate(r.date)}</td><td>${r.evaluator||'-'}</td><td>${Object.keys(r.classScores||{}).length}</td><td><span class="badge ${avg>=8?'badge-success':avg>=5?'badge-warn':'badge-danger'}">${avg}/10</span></td><td>${top}</td><td><button onclick="viewEval('cleanliness','${r.id}')" class="text-blue-600 text-sm">ดู</button></td></tr>`;
-  }).join('');
+  if (recs.length) {
+    rows.innerHTML = recs.slice().reverse().map(r=>{
+      const sc = Object.values(r.classScores||{});
+      const avg = sc.length?(sc.reduce((a,b)=>a+b,0)/sc.length).toFixed(2):'-';
+      const sorted = Object.entries(r.classScores||{}).sort((a,b)=>b[1]-a[1]);
+      const top = sorted[0]?`${sorted[0][0]} (${sorted[0][1]})`:'-';
+      return `<tr><td>${thaiDate(r.date)}</td><td>${r.evaluator||'-'}</td><td>${Object.keys(r.classScores||{}).length}</td><td><span class="badge ${avg>=8?'badge-success':avg>=5?'badge-warn':'badge-danger'}">${avg}/10</span></td><td>${top}</td><td><button onclick="viewEval('cleanliness','${r.id}')" class="text-blue-600 text-sm">ดู</button></td></tr>`;
+    }).join('');
+  }
+  // Render ranking based on currently active period button
+  const activeBtn = document.querySelector('.period-btn[data-system="cleanliness"].bg-blue-600');
+  const period = activeBtn?.dataset.period || 'day';
+  renderRanking('cleanliness', period);
 }
 function newCleanlinessEval() { buildEvalModal('cleanliness','🧹 ประเมินความสะอาดเขตรับผิดชอบ', NSR_CONFIG.cleanlinessCriteria); }
 
@@ -966,34 +1173,34 @@ function render_lineup() {
     const all = recs.flatMap(r=>Object.values(r.classScores||{}));
     const avg = all.reduce((a,b)=>a+b,0)/Math.max(1,all.length);
     document.getElementById('ln-avg').textContent = avg.toFixed(2);
-    const ap = avgPerClass(recs);
-    const sorted = Object.entries(ap).sort((a,b)=>b[1]-a[1]);
-    if (sorted.length) {
-      document.getElementById('ln-top').textContent = `${sorted[0][0]} (${sorted[0][1]})`;
-      document.getElementById('ln-bottom').textContent = `${sorted[sorted.length-1][0]} (${sorted[sorted.length-1][1]})`;
-    }
-    drawChart('chart-ln-class','bar',{
-      labels: NSR_CONFIG.classes,
-      datasets:[{label:'คะแนนเฉลี่ย', data:NSR_CONFIG.classes.map(c=>ap[c]||0), backgroundColor:'#3b82f6'}]
-    }, { scales:{y:{beginAtZero:true,max:10}} });
-    const trend = recs.map(r=>{ const sc=Object.values(r.classScores||{}); return {date:r.date, avg: sc.length?sc.reduce((a,b)=>a+b,0)/sc.length:0}; });
+    const trend = recs.slice().sort((a,b)=>(a.date||'').localeCompare(b.date||'')).map(r=>{
+      const sc=Object.values(r.classScores||{});
+      return {date:r.date, avg: sc.length?sc.reduce((a,b)=>a+b,0)/sc.length:0};
+    });
     drawChart('chart-ln-trend','line',{
       labels: trend.map(t=>thaiDate(t.date)),
       datasets:[{label:'คะแนนเฉลี่ย', data:trend.map(t=>+t.avg.toFixed(2)), borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.1)', tension:0.3, fill:true}]
     }, { scales:{y:{beginAtZero:true,max:10}} });
   } else {
+    document.getElementById('ln-avg').textContent = '—';
+    document.getElementById('ln-top').textContent = '—';
+    document.getElementById('ln-bottom').textContent = '—';
     drawChart('chart-ln-class','bar',{labels:NSR_CONFIG.classes,datasets:[{label:'คะแนนเฉลี่ย',data:NSR_CONFIG.classes.map(()=>0),backgroundColor:'#cbd5e1'}]},{scales:{y:{beginAtZero:true,max:10}}});
     drawChart('chart-ln-trend','line',{labels:['ยังไม่มีข้อมูล'],datasets:[{label:'คะแนนเฉลี่ย',data:[0],borderColor:'#cbd5e1'}]});
   }
   const rows = document.getElementById('ln-rows');
-  if (!recs.length) return;
-  rows.innerHTML = recs.slice().reverse().map(r=>{
-    const sc = Object.values(r.classScores||{});
-    const avg = sc.length?(sc.reduce((a,b)=>a+b,0)/sc.length).toFixed(2):'-';
-    const sorted = Object.entries(r.classScores||{}).sort((a,b)=>b[1]-a[1]);
-    const top = sorted[0]?`${sorted[0][0]} (${sorted[0][1]})`:'-';
-    return `<tr><td>${thaiDate(r.date)}</td><td>${r.evaluator||'-'}</td><td>${Object.keys(r.classScores||{}).length}</td><td><span class="badge ${avg>=8?'badge-success':avg>=5?'badge-warn':'badge-danger'}">${avg}/10</span></td><td>${top}</td><td><button onclick="viewEval('lineup','${r.id}')" class="text-blue-600 text-sm">ดู</button></td></tr>`;
-  }).join('');
+  if (recs.length) {
+    rows.innerHTML = recs.slice().reverse().map(r=>{
+      const sc = Object.values(r.classScores||{});
+      const avg = sc.length?(sc.reduce((a,b)=>a+b,0)/sc.length).toFixed(2):'-';
+      const sorted = Object.entries(r.classScores||{}).sort((a,b)=>b[1]-a[1]);
+      const top = sorted[0]?`${sorted[0][0]} (${sorted[0][1]})`:'-';
+      return `<tr><td>${thaiDate(r.date)}</td><td>${r.evaluator||'-'}</td><td>${Object.keys(r.classScores||{}).length}</td><td><span class="badge ${avg>=8?'badge-success':avg>=5?'badge-warn':'badge-danger'}">${avg}/10</span></td><td>${top}</td><td><button onclick="viewEval('lineup','${r.id}')" class="text-blue-600 text-sm">ดู</button></td></tr>`;
+    }).join('');
+  }
+  const activeBtn = document.querySelector('.period-btn[data-system="lineup"].bg-blue-600');
+  const period = activeBtn?.dataset.period || 'day';
+  renderRanking('lineup', period);
 }
 function newLineupEval() { buildEvalModal('lineup','📏 ประเมินระเบียบแถวหน้าเสาธง', NSR_CONFIG.lineupCriteria); }
 
