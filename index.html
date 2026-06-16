@@ -6,6 +6,7 @@
 <title>สภานักเรียนดิจิทัล – โรงเรียนหนองสำโรงวิทยา (ปีการศึกษา 2569)</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   body { font-family: 'Sarabun', sans-serif; }
@@ -79,6 +80,7 @@
     <button class="tab-btn text-sm px-3 py-2 rounded-lg font-medium" data-tab="attendance">✅ เช็คชื่อ</button>
     <button class="tab-btn text-sm px-3 py-2 rounded-lg font-medium" data-tab="cleanliness">🧹 ความสะอาด</button>
     <button class="tab-btn text-sm px-3 py-2 rounded-lg font-medium" data-tab="lineup">📏 ระเบียบแถว</button>
+    <button class="tab-btn text-sm px-3 py-2 rounded-lg font-medium" data-tab="admin">🔐 Admin</button>
   </nav>
 </header>
 <main class="max-w-7xl mx-auto px-4 py-6">
@@ -366,6 +368,62 @@
     </table></div></div>
 </section>
 
+<section id="sec-admin" class="section">
+  <!-- Login gate -->
+  <div id="admin-login" class="max-w-md mx-auto mt-10">
+    <div class="card p-8">
+      <div class="text-center mb-6">
+        <div class="text-5xl mb-3">🔐</div>
+        <h2 class="text-xl font-bold">เข้าสู่ระบบผู้ดูแล</h2>
+        <p class="text-sm text-slate-500 mt-1">สำหรับผู้ดูแลระบบเท่านั้น</p>
+      </div>
+      <div class="input-row"><label>ชื่อผู้ใช้ (Username)</label><input id="admin-user" type="text" placeholder="admin" autocomplete="off"></div>
+      <div class="input-row"><label>รหัสผ่าน (Password)</label><input id="admin-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')adminLogin()"></div>
+      <button onclick="adminLogin()" class="btn-primary w-full mt-2">เข้าสู่ระบบ</button>
+      <p id="admin-login-msg" class="text-sm text-red-600 mt-3 text-center" style="display:none"></p>
+    </div>
+  </div>
+
+  <!-- Admin panel (hidden until login) -->
+  <div id="admin-panel" style="display:none">
+    <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+      <div><h2 class="text-2xl font-bold mb-1">🔐 ระบบผู้ดูแล (Admin)</h2><p class="text-sm text-slate-600">จัดการรายชื่อนักเรียนและข้อมูลระบบ</p></div>
+      <button onclick="adminLogout()" class="btn-secondary">ออกจากระบบ</button>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+      <div class="card p-4"><p class="text-xs text-slate-500">นักเรียนทั้งหมด</p><p class="text-2xl font-bold text-blue-700" id="adm-students">0</p></div>
+      <div class="card p-4"><p class="text-xs text-slate-500">จำนวนห้อง</p><p class="text-2xl font-bold text-green-700" id="adm-classes">0</p></div>
+      <div class="card p-4"><p class="text-xs text-slate-500">บันทึกทุกระบบ</p><p class="text-2xl font-bold text-purple-700" id="adm-records">0</p></div>
+      <div class="card p-4"><p class="text-xs text-slate-500">สถานะเชื่อมต่อ</p><p class="text-base font-bold" id="adm-conn">—</p></div>
+    </div>
+
+    <!-- Import students -->
+    <div class="card p-5 mb-6">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+        <h3 class="font-semibold">🧑‍🎓 จัดการรายชื่อนักเรียน</h3>
+        <div class="flex gap-2">
+          <button onclick="downloadStudentTemplate()" class="btn-secondary">📥 ดาวน์โหลดฟอร์มตัวอย่าง</button>
+          <label class="btn-primary cursor-pointer">📤 นำเข้า Excel/CSV
+            <input type="file" id="adm-file" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleStudentFile(event)">
+          </label>
+        </div>
+      </div>
+      <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800 mb-3">
+        <b>กติกาการนำเข้า:</b> คอลัมน์ที่ต้องมี — เลขที่, คำนำหน้า, ชื่อ, นามสกุล, ระดับชั้น/ห้อง ·
+        ถ้าชื่อซ้ำกับที่มีอยู่ ระบบจะ<b>คงข้อมูลเดิมไว้</b> แต่<b>ปรับเลขที่/ชั้นตามไฟล์ใหม่</b>
+      </div>
+      <div id="adm-import-result" class="rounded-lg p-3 text-sm mb-3" style="display:none"></div>
+      <div class="overflow-x-auto" style="max-height:420px;overflow-y:auto">
+        <table class="table-modern w-full">
+          <thead><tr><th>เลขที่</th><th>คำนำหน้า</th><th>ชื่อ</th><th>นามสกุล</th><th>ชั้น</th><th></th></tr></thead>
+          <tbody id="adm-student-rows"><tr><td colspan="6"><div class="empty-state"><div class="emoji">🧑‍🎓</div><p>ยังไม่มีรายชื่อนักเรียน — นำเข้าจาก Excel/CSV เพื่อเริ่ม</p></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
 <div id="modal" class="modal-bg" onclick="if(event.target===this)closeModal()">
   <div class="modal-content">
     <div class="flex justify-between items-start mb-4">
@@ -383,14 +441,14 @@
 </footer>
 
 <script>
-window.NSR_CONFIG = {"year": "2569", "school": "โรงเรียนหนองสำโรงวิทยา", "classes": ["ป.1/1", "ป.1/2", "ป.2", "ป.3/1", "ป.3/2", "ป.4/1", "ป.4/2", "ป.5/1", "ป.5/2", "ป.6/1", "ป.6/2", "ม.1/1", "ม.1/2", "ม.2/1", "ม.2/2", "ม.3/1", "ม.3/2"], "violations": [{"code": "V01", "name": "มาสาย", "points": 2}, {"code": "V02", "name": "แต่งกายไม่ถูกระเบียบ", "points": 3}, {"code": "V03", "name": "ทรงผมไม่ถูกระเบียบ", "points": 3}, {"code": "V04", "name": "ขาดเรียน (ไม่ลา)", "points": 5}, {"code": "V05", "name": "พูดคำหยาบ", "points": 3}, {"code": "V06", "name": "ทะเลาะวิวาท", "points": 10}, {"code": "V07", "name": "นำสิ่งของต้องห้ามมาโรงเรียน", "points": 5}, {"code": "V08", "name": "ทำลายทรัพย์สินส่วนรวม", "points": 10}, {"code": "V09", "name": "ไม่ทำเวรประจำวัน", "points": 2}, {"code": "V10", "name": "อื่นๆ", "points": 2}], "lfTypes": ["เงินหายได้คืน", "ของหายได้คืน", "ความดีอื่นๆ"], "eyeTypes": ["พบเศษขยะ/ความสกปรก", "ทำลายทรัพย์สินส่วนรวม", "การละเมิดระเบียบ", "ความสะอาดห้องเรียน", "อื่นๆ"], "cleanlinessCriteria": [{"id": "c1", "name": "พื้น (ขยะ/ใบไม้)", "max": 2}, {"id": "c2", "name": "การจัดการถังขยะ", "max": 2}, {"id": "c3", "name": "การจัดเก็บอุปกรณ์", "max": 2}, {"id": "c4", "name": "ความเรียบร้อย", "max": 2}, {"id": "c5", "name": "ภาพรวม", "max": 2}], "lineupCriteria": [{"id": "l1", "name": "การจัดแถว", "max": 2}, {"id": "l2", "name": "การแต่งกาย", "max": 2}, {"id": "l3", "name": "กิจกรรมหน้าเสาธง", "max": 2}, {"id": "l4", "name": "มารยาท/ความสงบ", "max": 2}, {"id": "l5", "name": "ภาพรวม", "max": 2}]};
+window.NSR_CONFIG = {"year": "2569", "school": "โรงเรียนหนองสำโรงวิทยา", "classes": ["ป.1/1", "ป.1/2", "ป.2", "ป.3", "ป.4/1", "ป.4/2", "ป.5/1", "ป.5/2", "ป.6/1", "ป.6/2", "ม.1/1", "ม.1/2", "ม.2/1", "ม.2/2", "ม.3/1", "ม.3/2"], "violations": [{"code": "V01", "name": "มาสาย", "points": 2}, {"code": "V02", "name": "แต่งกายไม่ถูกระเบียบ", "points": 3}, {"code": "V03", "name": "ทรงผมไม่ถูกระเบียบ", "points": 3}, {"code": "V04", "name": "ขาดเรียน (ไม่ลา)", "points": 5}, {"code": "V05", "name": "พูดคำหยาบ", "points": 3}, {"code": "V06", "name": "ทะเลาะวิวาท", "points": 10}, {"code": "V07", "name": "นำสิ่งของต้องห้ามมาโรงเรียน", "points": 5}, {"code": "V08", "name": "ทำลายทรัพย์สินส่วนรวม", "points": 10}, {"code": "V09", "name": "ไม่ทำเวรประจำวัน", "points": 2}, {"code": "V10", "name": "อื่นๆ", "points": 2}], "lfTypes": ["เงินหายได้คืน", "ของหายได้คืน", "ความดีอื่นๆ"], "eyeTypes": ["พบเศษขยะ/ความสกปรก", "ทำลายทรัพย์สินส่วนรวม", "การละเมิดระเบียบ", "ความสะอาดห้องเรียน", "อื่นๆ"], "cleanlinessCriteria": [{"id": "c1", "name": "พื้น (ขยะ/ใบไม้)", "max": 2}, {"id": "c2", "name": "การจัดการถังขยะ", "max": 2}, {"id": "c3", "name": "การจัดเก็บอุปกรณ์", "max": 2}, {"id": "c4", "name": "ความเรียบร้อย", "max": 2}, {"id": "c5", "name": "ภาพรวม", "max": 2}], "lineupCriteria": [{"id": "l1", "name": "การจัดแถว", "max": 2}, {"id": "l2", "name": "การแต่งกาย", "max": 2}, {"id": "l3", "name": "กิจกรรมหน้าเสาธง", "max": 2}, {"id": "l4", "name": "มารยาท/ความสงบ", "max": 2}, {"id": "l5", "name": "ภาพรวม", "max": 2}]};
 const GS_URL = "https://script.google.com/macros/s/AKfycbwz2L-Hcm_HCyMiAL785n4SS3ix09YFlPGefNQlum6i85jA2HWWjqbH6JYjwabjFvD9/exec";
 const STORAGE_KEY = 'nsr_data_2569';
 
 let DATA = loadData();
 function loadData() {
   try { const s = localStorage.getItem(STORAGE_KEY); if (s) return JSON.parse(s); } catch(e) {}
-  return { evoting:[], poll:[], council:[], voicebox:[], eyes:[], demerit:[], lostfound:[], attendance:[], cleanliness:[], lineup:[] };
+  return { evoting:[], poll:[], council:[], voicebox:[], eyes:[], demerit:[], lostfound:[], attendance:[], cleanliness:[], lineup:[], students:[] };
 }
 function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA)); }
 
@@ -454,7 +512,7 @@ async function loadFromGSheets() {
   } catch(e) { /* fall through */ }
 
   // Strategy 2: parallel requests (10x faster than sequential)
-  const systems = ['evoting','poll','council','voicebox','eyes','demerit','lostfound','attendance','cleanliness','lineup'];
+  const systems = ['evoting','poll','council','voicebox','eyes','demerit','lostfound','attendance','cleanliness','lineup','students'];
   const results = await Promise.allSettled(systems.map(sys =>
     gsCall({ action: 'list', system: sys }).then(r => ({ sys, data: r?.data }))
   ));
@@ -1290,6 +1348,189 @@ function exportAllData() {
   a.href=url; a.download=`NSR_2569_${todayStr()}.json`; a.click();
   URL.revokeObjectURL(url);
   toast('💾 ส่งออกเรียบร้อย');
+}
+
+// =================== ADMIN / LOGIN ===================
+const ADMIN_USER = 'admin';
+const ADMIN_PASS = 'kruyui12123';
+let adminAuthed = false;
+
+function adminLogin() {
+  const u = document.getElementById('admin-user').value.trim();
+  const p = document.getElementById('admin-pass').value;
+  const msg = document.getElementById('admin-login-msg');
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    adminAuthed = true;
+    sessionStorage.setItem('nsr_admin', '1');
+    document.getElementById('admin-login').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'block';
+    document.getElementById('admin-pass').value = '';
+    msg.style.display = 'none';
+    render_admin();
+  } else {
+    msg.textContent = '❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
+    msg.style.display = 'block';
+  }
+}
+function adminLogout() {
+  adminAuthed = false;
+  sessionStorage.removeItem('nsr_admin');
+  document.getElementById('admin-login').style.display = 'block';
+  document.getElementById('admin-panel').style.display = 'none';
+  document.getElementById('admin-user').value = '';
+}
+function render_admin() {
+  if (!adminAuthed && sessionStorage.getItem('nsr_admin') === '1') {
+    adminAuthed = true;
+    document.getElementById('admin-login').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'block';
+  }
+  if (!adminAuthed) return;
+
+  const students = DATA.students || [];
+  document.getElementById('adm-students').textContent = students.length;
+  const classes = new Set(students.map(s => s.class).filter(Boolean));
+  document.getElementById('adm-classes').textContent = classes.size;
+  const totalRecords = Object.keys(DATA).filter(k => k !== 'students').reduce((a,k) => a + (DATA[k]?.length||0), 0);
+  document.getElementById('adm-records').textContent = totalRecords;
+  const connEl = document.getElementById('adm-conn');
+  const syncStatus = document.getElementById('sync-status').textContent;
+  connEl.textContent = syncStatus.includes('🟢') ? '🟢 ออนไลน์' : '⚠️ ออฟไลน์';
+
+  const rows = document.getElementById('adm-student-rows');
+  if (!students.length) {
+    rows.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="emoji">🧑‍🎓</div><p>ยังไม่มีรายชื่อนักเรียน — นำเข้าจาก Excel/CSV เพื่อเริ่ม</p></div></td></tr>';
+  } else {
+    const sorted = students.slice().sort((a,b) => {
+      if (a.class !== b.class) return String(a.class).localeCompare(String(b.class), 'th');
+      return (parseInt(a.no)||0) - (parseInt(b.no)||0);
+    });
+    rows.innerHTML = sorted.map(s =>
+      `<tr><td>${s.no||'-'}</td><td>${s.prefix||''}</td><td>${s.firstName||''}</td><td>${s.lastName||''}</td><td>${s.class||'-'}</td><td><button onclick="deleteStudent('${s.id}')" class="text-red-600 text-sm">ลบ</button></td></tr>`
+    ).join('');
+  }
+}
+
+function downloadStudentTemplate() {
+  const ws = XLSX.utils.aoa_to_sheet([
+    ['เลขที่','คำนำหน้า','ชื่อ','นามสกุล','ระดับชั้น/ห้อง'],
+    ['1','เด็กชาย','สมชาย','ใจดี','ป.1/1'],
+    ['2','เด็กหญิง','สมหญิง','รักเรียน','ป.1/1'],
+  ]);
+  ws['!cols'] = [{wch:8},{wch:12},{wch:16},{wch:16},{wch:14}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'รายชื่อนักเรียน');
+  XLSX.writeFile(wb, 'ฟอร์มรายชื่อนักเรียน_NSR.xlsx');
+  toast('📥 ดาวน์โหลดฟอร์มแล้ว');
+}
+
+function handleStudentFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async function(ev) {
+    try {
+      const wb = XLSX.read(ev.target.result, { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+      const parsed = parseStudentRows(rows);
+      if (!parsed.length) { showImportResult('ไม่พบข้อมูลนักเรียน — ตรวจสอบหัวคอลัมน์', false); return; }
+      await importStudentsToSystem(parsed);
+    } catch(err) {
+      showImportResult('อ่านไฟล์ไม่สำเร็จ: ' + err.message, false);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+  e.target.value = '';
+}
+
+function parseStudentRows(rows) {
+  if (!rows.length) return [];
+  const header = rows[0].map(h => String(h).trim());
+  const find = (kws) => header.findIndex(h => kws.some(k => h.includes(k)));
+  const iNo = find(['เลขที่','ลำดับ','No','no']);
+  const iPre = find(['คำนำหน้า','นำหน้า']);
+  const iFirst = header.findIndex(h => h.includes('ชื่อ') && !h.includes('นามสกุล'));
+  const iLast = find(['นามสกุล','สกุล']);
+  const iClass = find(['ชั้น','ห้อง','ระดับ','class']);
+  const students = [];
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    if (!r || r.every(c => String(c).trim() === '')) continue;
+    const first = iFirst >= 0 ? String(r[iFirst]||'').trim() : '';
+    const last = iLast >= 0 ? String(r[iLast]||'').trim() : '';
+    if (!first && !last) continue;
+    students.push({
+      no: iNo >= 0 ? String(r[iNo]||'').trim() : '',
+      prefix: iPre >= 0 ? String(r[iPre]||'').trim() : '',
+      firstName: first, lastName: last,
+      class: iClass >= 0 ? String(r[iClass]||'').trim() : ''
+    });
+  }
+  return students;
+}
+
+async function importStudentsToSystem(incoming) {
+  showImportResult('⏳ กำลังนำเข้า...', true);
+  const nameKey = (fn, ln) => ((fn||'').trim() + '|' + (ln||'').trim());
+  const existing = DATA.students || [];
+  const idxByName = {};
+  existing.forEach((s, i) => { idxByName[nameKey(s.firstName, s.lastName)] = i; });
+
+  let added = 0, updated = 0;
+  incoming.forEach(s => {
+    const fn = (s.firstName||'').trim(), ln = (s.lastName||'').trim();
+    if (!fn && !ln) return;
+    const key = nameKey(fn, ln);
+    if (key in idxByName) {
+      const ex = existing[idxByName[key]];
+      ex.class = s.class; ex.no = s.no;  // คงชื่อเดิม ปรับเลขที่+ชั้น
+      updated++;
+    } else {
+      const rec = {
+        id: 'STU' + Date.now() + Math.floor(Math.random()*10000),
+        class: s.class, no: s.no, prefix: s.prefix,
+        firstName: fn, lastName: ln,
+        fullName: (s.prefix + fn + ' ' + ln).trim()
+      };
+      existing.push(rec);
+      idxByName[key] = existing.length - 1;
+      added++;
+    }
+  });
+
+  DATA.students = existing;
+  saveData();
+  render_admin();
+
+  try {
+    const res = await gsCall({ action: 'importStudents', students: incoming });
+    if (res && res.ok) {
+      showImportResult(`✅ นำเข้าสำเร็จ! เพิ่มใหม่ ${added} คน · อัปเดต ${updated} คน · รวมทั้งหมด ${existing.length} คน (ซิงค์ Google Sheets แล้ว)`, true);
+    } else {
+      showImportResult(`✅ นำเข้าในเครื่องแล้ว: เพิ่ม ${added} · อัปเดต ${updated} (⚠️ ยังไม่ได้ซิงค์ออนไลน์)`, true);
+    }
+  } catch(e) {
+    showImportResult(`✅ นำเข้าในเครื่องแล้ว: เพิ่ม ${added} · อัปเดต ${updated} (⚠️ ออฟไลน์)`, true);
+  }
+  toast('✅ นำเข้า ' + incoming.length + ' รายการ');
+}
+
+function showImportResult(msg, ok) {
+  const el = document.getElementById('adm-import-result');
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.style.background = ok ? '#dcfce7' : '#fee2e2';
+  el.style.color = ok ? '#166534' : '#991b1b';
+}
+
+async function deleteStudent(id) {
+  if (!confirm('ต้องการลบนักเรียนคนนี้?')) return;
+  DATA.students = (DATA.students||[]).filter(s => s.id !== id);
+  saveData();
+  render_admin();
+  gsCall({ action: 'delete', system: 'students', record: { id } }).catch(()=>{});
+  toast('ลบแล้ว');
 }
 
 // ============== INIT ==============
